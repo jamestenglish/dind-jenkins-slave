@@ -21,5 +21,7 @@ VOLUME ["/var/lib/docker"]
 # from jenkins-slave image
 RUN usermod -a -G docker ${JENKINS_WORKUSER}
 
-ENTRYPOINT ["/usr/bin/supervisord"]
-CMD ["-n"]
+COPY entrypoint.sh /sbin/entrypoint.sh
+RUN chmod 755 /sbin/entrypoint.sh
+
+ENTRYPOINT ["/sbin/entrypoint.sh"]
