@@ -4,16 +4,50 @@ A Docker image which allows for running Docker in Docker (DinD). This image is m
 
 This is a mashup of "[evarga/jenkins-slave](https://registry.hub.docker.com/u/evarga/jenkins-slave/)" and "[jpetazzo/dind](https://registry.hub.docker.com/u/jpetazzo/dind/)".
 
-## Requirements
+This is forked from "[tehranian/dind-jenkins-slave](https://registry.hub.docker.com/u/tehranian/dind-jenkins-slave/)".
 
-* The container must be run with `--privileged` in order for nested-Docker to work. There is a check box to enable this for the image within the Jenkins UI.
+## Installation
 
-## Instructions
+Pulling:
 
-I have a write-up of how to use Docker containers as build slaves within Jenkins at: http://dantehranian.wordpress.com/2014/09/08/docker-jenkins-dynamically-provisioning-sles-11-build-containers/
+```bash
+$ docker pull mizunashi/jenkins-docker-slave
+```
 
-Once your Jenkins slave is up and running, you can run `docker` commands like `docker build`, `docker pull`, and `docker push` from within the Docker build slave container.
+Building:
 
-## Misc References
+```bash
+$ git clone https://github.com/mizunashi-mana/dind-jenkins-slave
+$ cd dind-jenkins-slave
+$ make build
+```
 
-* https://blog.docker.com/2013/09/docker-can-now-run-within-docker/
+## Usage
+
+you can quickstart:
+
+```bash
+$ make quickstart
+$ docker ps
+...
+xxxxxxxxxxxx        mizunashi/jenkins-docker-slave:latest   "/usr/bin/supervisor   X seconds ago       Up X seconds        0.0.0.0:30022->22/tcp      mydockersl-app
+...
+```
+
+30022 port connected SSHD.
+
+If you would run with custom options:
+
+```bash
+$ docker run --privileged -t -i mizunashi/jenkins-docker-slave
+```
+
+`--privileged` option is necessary.
+
+And, if you would run with custom options and daemon:
+
+```bash
+$ docker run -d --privileged -e DOCKER_DAEMON_ARGS="-D" mizunashi/jenkins-docker-slave
+```
+
+See Also, [dind document](https://github.com/jpetazzo/dind)
