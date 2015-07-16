@@ -6,6 +6,13 @@ This is a mashup of "[evarga/jenkins-slave](https://registry.hub.docker.com/u/ev
 
 This is forked from "[tehranian/dind-jenkins-slave](https://registry.hub.docker.com/u/tehranian/dind-jenkins-slave/)".
 
+## Attention
+
+The image includes default example ssh key.  
+So, if you run this image without custom key option and publish ssh port, all of people can login.
+
+**It is very dangerous that exposed ssh port publishes globally.**
+
 ## Installation
 
 Pulling:
@@ -30,11 +37,11 @@ you can quickstart:
 $ make quickstart
 $ docker ps
 ...
-xxxxxxxxxxxx        mizunashi/jenkins-docker-slave:latest   "/usr/bin/supervisor   X seconds ago       Up X seconds        0.0.0.0:30022->22/tcp      mydockersl-app
+xxxxxxxxxxxx        mizunashi/jenkins-docker-slave:latest   "/usr/bin/supervisor   X seconds ago       Up X seconds        22/tcp      mydockersl-app
 ...
 ```
 
-30022 port connected SSHD.
+The ssh key to login jenkins-slave is in `./ssh-keys` directory.
 
 If you would run with custom options:
 
@@ -51,3 +58,24 @@ $ docker run -d --privileged -e DOCKER_DAEMON_ARGS="-D" mizunashi/jenkins-docker
 ```
 
 See Also, [dind document](https://github.com/jpetazzo/dind)
+
+And, using custom authorized_keys:
+
+```bash
+$ docker run -d --name mydockersl-app --privileged \
+  -e AUTHORIZED_KEYS_URL='http://your domain/your keys' \
+  -e DOCKER_DAEMON_ARGS="-D" \
+  mizunashi/jenkins-docker-slave
+```
+
+See Also, [docker-jenkins-slave document](https://github.com/mizunashi-mana/docker-jenkins-slave)
+
+And, linked jenkins container:
+
+```bash
+$ docker run -d --privileged \
+  -e DOCKER_DAEMON_ARGS="-D" \
+  --name mydocker-sl \
+  mizunashi/jenkins-docker-slave
+$ docker run -d --name myjenkins --link mydocker-sl:mydocker-sl jenkins
+```
