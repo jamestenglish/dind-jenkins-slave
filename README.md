@@ -79,3 +79,23 @@ $ docker run -d --privileged \
   mizunashi/jenkins-docker-slave
 $ docker run -d --name myjenkins --link mydocker-sl:mydocker-sl jenkins
 ```
+
+## Require Environments
+
+Value type:
+ * CONST - Contant value.  Dockerfile provided.  You can use entrypoint, building run or etc.
+ * SETTABLE - Settable value.  You can set the value when `docker run` with `-e` or `--env` option.
+
+| Name                  | Type     | Description |
+|-----------------------|----------|-------------|
+| JENKINS_WORKUSER      | CONST    | Setted `jenkins`. This is work username for SSH login. |
+| JENKINS_WORKSPACE     | CONST    | Setted `/var/jenkins_ws`. This is work user's home dir. |
+| SETUP_DIR             | CONST    | Setted `/var/cache/jenkins`. This is to lie setup files. |
+| AUTHORIZED_KEY_STRING | SETTABLE | If this value was setted, `docker` make jenkins's authorized_keys this value. |
+| AUTHORIZED_KEYS_URL   | SETTABLE | If `AUTHORIZED_KEY_STRING` was not setted and this value was setted, `docker` download a file of the url and make jenkins's authorized_keys this value. |
+| DOCKER_PORT           | SETTABLE | If this value was setted, `docker` in `docker` open the http api on the port. | DOCKER_DAEMON_ARGS    | SETTABLE | `docker` in `docker` run with this value. |
+| LOG                   | SETTABLE | If this value was setted, `docker` in `docker` is logging in this path. |
+
+If either `AUTHORIZED_KEY_STRING` or `AUTHORIZED_KEYS_URL` was not setted, `docker` use example key.
+
+*It is very dangerous!!*  So, you must set either one.
