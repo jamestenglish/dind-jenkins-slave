@@ -1,4 +1,4 @@
-FROM mizunashi/jenkins-slave
+FROM mizunashi/jenkins-swarm-slave
 MAINTAINER Mizunashi Mana <mizunashi_mana@mma.club.uec.ac.jp>
 
 RUN apt-get update \

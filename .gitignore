@@ -1,6 +1,3 @@
-*.tar.*
-/ssh-keys/
-
 # for MacOSX
 .DS_Store
 

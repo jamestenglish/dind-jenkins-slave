@@ -2,10 +2,10 @@
 set -e
 
 # sshd configure
-cat > /etc/supervisor/conf.d/sshd.conf <<EOF
-[program:sshd]
+cat > /etc/supervisor/conf.d/swarm-client.conf <<EOF
+[program:swarm-client]
 directory=/
-command=/usr/sbin/sshd -D
+command=/usr/bin/swarm-client
 user=root
 autostart=true
 autorestart=true
