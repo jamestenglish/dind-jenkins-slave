@@ -5,8 +5,8 @@ set -e
 cat > /etc/supervisor/conf.d/swarm-client.conf <<EOF
 [program:swarm-client]
 directory=/
-command=/usr/bin/swarm-client
-user=root
+command=${JENKINS_WORKSPACE}/swarm-client
+user=${JENKINS_WORKUSER}
 autostart=true
 autorestart=true
 EOF

@@ -1,6 +1,8 @@
 FROM mizunashi/jenkins-swarm-slave
 MAINTAINER Mizunashi Mana <mizunashi_mana@mma.club.uec.ac.jp>
 
+USER root
+
 RUN apt-get update \
  && apt-get install -y \
       apt-transport-https ca-certificates \

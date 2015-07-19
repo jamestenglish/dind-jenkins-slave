@@ -90,10 +90,10 @@ rm -rf /var/run/docker.pid
 # otherwise, spawn a shell as well
 if [ "$DOCKER_PORT" ]
 then
-	exec docker -d -H 0.0.0.0:$DOCKER_PORT -H unix://var/run/docker.sock \
+	exec docker -d -H 0.0.0.0:$DOCKER_PORT -H unix:///var/run/docker.sock \
 		$DOCKER_DAEMON_ARGS
 else
-	if [ "$LOG" == "file" ]
+	if [ "$DOCKER_LOG" == "file" ]
 	then
 		docker -d $DOCKER_DAEMON_ARGS &>/var/log/docker.log &
 	else

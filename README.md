@@ -6,13 +6,6 @@ This is a mashup of "[evarga/jenkins-slave](https://registry.hub.docker.com/u/ev
 
 This is forked from "[tehranian/dind-jenkins-slave](https://registry.hub.docker.com/u/tehranian/dind-jenkins-slave/)".
 
-## Attention
-
-The image includes default example ssh key.  
-So, if you run this image without custom key option and publish ssh port, all of people can login.
-
-**It is very dangerous that exposed ssh port publishes globally.**
-
 ## Installation
 
 Pulling:
@@ -31,71 +24,40 @@ $ make build
 
 ## Usage
 
-you can quickstart:
-
 ```bash
-$ make quickstart
-$ docker ps
-...
-xxxxxxxxxxxx        mizunashi/jenkins-docker-slave:latest   "/usr/bin/supervisor   X seconds ago       Up X seconds        22/tcp      mydockersl-app
-...
-```
-
-The ssh key to login jenkins-slave is in `./ssh-keys` directory.
-
-If you would run with custom options:
-
-```bash
-$ docker run --privileged -t -i mizunashi/jenkins-docker-slave
-```
-
-`--privileged` option is necessary.
-
-And, if you would run with custom options and daemon:
-
-```bash
-$ docker run -d --privileged -e DOCKER_DAEMON_ARGS="-D" mizunashi/jenkins-docker-slave
-```
-
-See Also, [dind document](https://github.com/jpetazzo/dind)
-
-And, using custom authorized_keys:
-
-```bash
-$ docker run -d --name mydockersl-app --privileged \
-  -e AUTHORIZED_KEYS_URL='http://your domain/your keys' \
-  -e DOCKER_DAEMON_ARGS="-D" \
+$ docker run -d --privileged -e DOCKER_DAEMON_ARGS="-D" \
+  --link jenkins-master-container:jenkins \
+  -e JENKINS_USERNAME=jenkins \
+  -e JENKINS_PASSWORD=jenkins \
+  -e JENKINS_LABELS="docker dind" \
   mizunashi/jenkins-docker-slave
 ```
 
-See Also, [docker-jenkins-slave document](https://github.com/mizunashi-mana/docker-jenkins-slave)
+### See Also
 
-And, linked jenkins container:
-
-```bash
-$ docker run -d --privileged \
-  -e DOCKER_DAEMON_ARGS="-D" \
-  --name mydocker-sl \
-  mizunashi/jenkins-docker-slave
-$ docker run -d --name myjenkins --link mydocker-sl:mydocker-sl jenkins
-```
+* [dind document](https://github.com/jpetazzo/dind)
+* [mizunashi/jenkins-swarm-slave](https://github.com/mizunashi-mana/jenkins-swarm-slave-docker)
 
 ## Require Environments
 
 Value type:
- * CONST - Contant value.  Dockerfile provided.  You can use entrypoint, building run or etc.
- * SETTABLE - Settable value.  You can set the value when `docker run` with `-e` or `--env` option.
+
+* CONST - Contant value.  Dockerfile provided.  You can use entrypoint, building run or etc.
+* SETTABLE - Settable value.  You can set the value when `docker run` with `-e` or `--env` option.
 
 | Name                  | Type     | Description |
 |-----------------------|----------|-------------|
-| JENKINS_WORKUSER      | CONST    | Setted `jenkins`. This is work username for SSH login. |
+| JENKINS_WORKUSER      | CONST    | Setted `jenkins`. This is work username. |
 | JENKINS_WORKSPACE     | CONST    | Setted `/var/jenkins_ws`. This is work user's home dir. |
-| SETUP_DIR             | CONST    | Setted `/var/cache/jenkins`. This is to lie setup files. |
-| AUTHORIZED_KEY_STRING | SETTABLE | If this value was setted, `docker` make jenkins's authorized_keys this value. |
-| AUTHORIZED_KEYS_URL   | SETTABLE | If `AUTHORIZED_KEY_STRING` was not setted and this value was setted, `docker` download a file of the url and make jenkins's authorized_keys this value. |
-| DOCKER_PORT           | SETTABLE | If this value was setted, `docker` in `docker` open the http api on the port. | DOCKER_DAEMON_ARGS    | SETTABLE | `docker` in `docker` run with this value. |
-| LOG                   | SETTABLE | If this value was setted, `docker` in `docker` is logging in this path. |
+| SETUP_DIR             | CONST    | Setted `/var/cache/jenkins_ws`. This is to lie setup files. |
+| JAVA_OPTS             | SETTABLE | `java` run with this extra options |
+| JENKINS_MASTER        | SETTABLE | If this value was setted, `docker` set the target URL for jenkins master. |
+| JENKINS_USERNAME      | SETTABLE | If this value was setted, `docker` set the username for authentication. |
+| JENKINS_PASSWORD      | SETTABLE | If this value was setted, `docker` set the password for authentication. |
+| JENKINS_NAME          | SETTABLE | If this value was setted, `docker` set the name of this jenkins slave. |
+| JENKINS_EXECUTORS     | SETTABLE | If this value was setted, `docker` set the number of executors for this jenkins slave. |
+| JENKINS_LABELS        | SETTABLE | If this value was setted, `docker` set the whitespace-separater list of labels for this jenkins slave. |
+| DOCKER_DAEMON_ARGS    | SETTABLE | `docker` in `docker` run with this extra option. | 
+| DOCKER_PORT           | SETTABLE | If this value was setted, `docker` in `docker` open http api on the port. |
+| DOCKER_LOG            | SETTABLE | If this value was setted, `docker` in `docker` is logging in this path. |
 
-If either `AUTHORIZED_KEY_STRING` or `AUTHORIZED_KEYS_URL` was not setted, `docker` use example key.
-
-*It is very dangerous!!*  So, you must set either one.

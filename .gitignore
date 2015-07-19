@@ -1,3 +1,5 @@
+*.tar.*
+
 # for MacOSX
 .DS_Store
 

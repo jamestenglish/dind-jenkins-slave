@@ -7,7 +7,7 @@ if [[ -z "${JENKINS_MASTER}" ]] && [ -n "${JENKINS_PORT_8080_TCP_ADDR}" ]; then
   JENKINS_MASTER="http://${JENKINS_PORT_8080_TCP_ADDR}:${JENKINS_PORT_8080_TCP_PORT}"
 fi
 
-cat > /usr/bin/swarm-client <<EOF
+cat > ${JENKINS_WORKSPACE}/swarm-client <<EOF
 #!/bin/sh
 
 /usr/bin/java \
@@ -19,9 +19,9 @@ cat > /usr/bin/swarm-client <<EOF
   ${JENKINS_PASSWORD:+-password ${JENKINS_PASSWORD}} \
   ${JENKINS_NAME:+-name ${JENKINS_NAME}} \
   ${JENKINS_EXECUTORS:+-executors ${JENKINS_EXECUTORS}} \
-  ${JENKINS_LABELS:+-labels "${JENKINS_LABELS}"}
+  ${JENKINS_LABELS:+-labels '${JENKINS_LABELS}'}
 EOF
-chmod 755 /usr/bin/swarm-client
+chmod 755 ${JENKINS_WORKSPACE}/swarm-client
 
 set -x
 exec start-stop-daemon --start \
